@@ -157,31 +157,35 @@ public class LoginForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void LoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginBtnActionPerformed
-        try{
-        FileReader fr = new FileReader("user");
-            BufferedReader br = new BufferedReader(fr);
-            String read;
-            boolean status = false;
-            int numOfdata = 1;
-            while ((read = br.readLine()) != null) {//not null means not end of file
-                if (read.split(";")[0].equals(userNameTxt.getText()) && read.split(";")[1].equals(new String(pwdTxt.getPassword())));
+   try {
+        FileReader fr = new FileReader("user.txt");
+        BufferedReader br = new BufferedReader(fr);
+        String read;
+        boolean status = false;
+
+        while ((read = br.readLine()) != null) { // not null means not end of file
+            String[] userDetails = read.split(";");
+            if (userDetails[0].equals(userNameTxt.getText()) && userDetails[1].equals(new String(pwdTxt.getPassword()))) {
                 status = true;
                 break;
-            }else{
-        break;}
-            if status
-         {
-                
             }
         }
-    }
-    catch(IOException e
 
-    
-        ){
-            System.out.println("Exception Error " + e.getMessage());
-    }
-      
+        br.close(); // close the BufferedReader
+        fr.close(); // close the FileReader
+
+        if (status) {
+            JOptionPane.showMessageDialog(null, "Login successful. Welcome, " + userNameTxt.getText() + "!");
+            // You can add code here to open the main application window
+            this.dispose(); // Close the login form
+            // new MainAppForm().setVisible(true); // Open the main application window
+        } else {
+            JOptionPane.showMessageDialog(null, "Login failed. Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(null, "An error occurred while reading the user data: " + e.getMessage());
+    }      
+ 
     }//GEN-LAST:event_LoginBtnActionPerformed
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
