@@ -6,9 +6,7 @@ package GUIDemo;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,6 +18,7 @@ public class LoginForm extends javax.swing.JFrame {
     /**
      * Creates new form RegisterForm
      */
+    private static String username;//username is a variable
     public LoginForm() {
         initComponents();
     }
@@ -36,7 +35,7 @@ public class LoginForm extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        usrName = new javax.swing.JLabel();
+        JLabel = new javax.swing.JLabel();
         userNameTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         pwdTxt = new javax.swing.JPasswordField();
@@ -69,8 +68,8 @@ public class LoginForm extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        usrName.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        usrName.setText("Username:");
+        JLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        JLabel.setText("Username:");
 
         userNameTxt.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
 
@@ -102,7 +101,7 @@ public class LoginForm extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(usrName)
+                    .addComponent(JLabel)
                     .addComponent(jLabel2)
                     .addComponent(LoginBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,7 +121,7 @@ public class LoginForm extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(usrName)
+                    .addComponent(JLabel)
                     .addComponent(userNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -156,6 +155,17 @@ public class LoginForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+  public void setusername(String username) {
+        LoginForm.username = username;
+    }//encapsulation
+
+    public String getusername() {
+        return LoginForm.username;
+    }
+  
+    
+  
+    
     private void LoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginBtnActionPerformed
    try {
         FileReader fr = new FileReader("user.txt");
@@ -166,11 +176,20 @@ public class LoginForm extends javax.swing.JFrame {
         while ((read = br.readLine()) != null) { // not null means not end of file
             String[] userDetails = read.split(";");
             if (userDetails[0].equals(userNameTxt.getText()) && userDetails[1].equals(new String(pwdTxt.getPassword()))) {
+                this.setusername(userNameTxt.getText());
                 status = true;
                 break;
             }
         }
-
+        
+        //login fail
+        if(!status){
+            JOptionPane.showMessageDialog(null,"Invalid Username or Password");
+        }else{//login success
+            this.dispose();
+            new toDoListForm().setVisible(true);
+        }
+        
         br.close(); // close the BufferedReader
         fr.close(); // close the FileReader
 
@@ -231,6 +250,7 @@ public class LoginForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel JLabel;
     private java.awt.Button LoginBtn;
     private java.awt.Button clearBtn;
     private javax.swing.JLabel jLabel1;
@@ -239,6 +259,9 @@ public class LoginForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPasswordField pwdTxt;
     private javax.swing.JTextField userNameTxt;
-    private javax.swing.JLabel usrName;
     // End of variables declaration//GEN-END:variables
+
+    public void setUserNameTxt(javax.swing.JTextField userNameTxt) {
+        this.userNameTxt = userNameTxt;
+    }
 }

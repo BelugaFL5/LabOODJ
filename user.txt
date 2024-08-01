@@ -1,1 +1,2 @@
 Ayam;123;AYam MAn;
+Bird;123;BirdKTM;
