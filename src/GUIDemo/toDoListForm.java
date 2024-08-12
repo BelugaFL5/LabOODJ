@@ -4,6 +4,13 @@
  */
 package GUIDemo;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -14,9 +21,41 @@ public class toDoListForm extends javax.swing.JFrame {
     /**
      * Creates new form RegisterForm
      */
-    public toDoListForm() {
+public toDoListForm() {
+    try {
         initComponents();
+
+        LoginForm login = new LoginForm();
+        String username = login.getusername(); // Handle potential null here
+
+        if (username != null) {
+            usernameLbl.setText(username);
+
+            DefaultTableModel model = (DefaultTableModel) toDoTbl.getModel();
+            model.setRowCount(0);
+
+            FileReader fr = new FileReader("todo.txt"); // Consider using a more flexible file path
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(";");
+                if (fields.length == 4 && fields[3].equals(username)) {
+                    model.addRow(new Object[]{fields[0], fields[1], fields[2], fields[3]});
+                }
+            }
+
+            br.close();
+            fr.close();
+        } else {
+            // Handle case where username is null
+        }
+    } catch (IOException e) {
+        // Handle file-related exceptions
+            
     }
+}
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,15 +68,16 @@ public class toDoListForm extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        usernameLbl = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        registerBtn = new java.awt.Button();
+        searchBtn = new java.awt.Button();
         clearBtn = new java.awt.Button();
-        toDoTtxtField = new javax.swing.JTextField();
+        searchTxt = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         toDoTbl = new javax.swing.JTable();
         editBtn = new java.awt.Button();
         addBtn = new java.awt.Button();
-        changeStatusBtn = new java.awt.Button();
+        statBtn = new java.awt.Button();
         deleteBtn = new java.awt.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -47,12 +87,16 @@ public class toDoListForm extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Corbel", 3, 48)); // NOI18N
         jLabel1.setText("To Do List");
 
+        usernameLbl.setText("jLabel2");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(185, 185, 185)
+                .addGap(93, 93, 93)
+                .addComponent(usernameLbl)
+                .addGap(55, 55, 55)
                 .addComponent(jLabel1)
                 .addContainerGap(167, Short.MAX_VALUE))
         );
@@ -62,16 +106,20 @@ public class toDoListForm extends javax.swing.JFrame {
                 .addContainerGap(15, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(usernameLbl)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        registerBtn.setActionCommand("Search");
-        registerBtn.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        registerBtn.setLabel("Search");
-        registerBtn.addActionListener(new java.awt.event.ActionListener() {
+        searchBtn.setActionCommand("Search");
+        searchBtn.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        searchBtn.setLabel("Search");
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                registerBtnActionPerformed(evt);
+                searchBtnActionPerformed(evt);
             }
         });
 
@@ -119,13 +167,23 @@ public class toDoListForm extends javax.swing.JFrame {
             }
         });
 
-        changeStatusBtn.setActionCommand("Change Status");
-        changeStatusBtn.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        changeStatusBtn.setLabel("Change Status");
+        statBtn.setActionCommand("Change Status");
+        statBtn.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        statBtn.setLabel("Change Status");
+        statBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                statBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setActionCommand("Delete");
         deleteBtn.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         deleteBtn.setLabel("Delete");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -134,11 +192,11 @@ public class toDoListForm extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(registerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(26, 26, 26)
                         .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34)
-                        .addComponent(toDoTtxtField))
+                        .addComponent(searchTxt))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -147,7 +205,7 @@ public class toDoListForm extends javax.swing.JFrame {
                 .addGap(49, 49, 49)
                 .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(changeStatusBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(statBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39))
@@ -156,8 +214,8 @@ public class toDoListForm extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(toDoTtxtField)
-                    .addComponent(registerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(searchTxt)
+                    .addComponent(searchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(clearBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -166,7 +224,7 @@ public class toDoListForm extends javax.swing.JFrame {
                     .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(changeStatusBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(statBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
@@ -191,18 +249,68 @@ public class toDoListForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
-        // TODO add your handling code here:
-     
-    }//GEN-LAST:event_registerBtnActionPerformed
+        
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+         // TODO add your handling code here:
+        try {
+            DefaultTableModel model = (DefaultTableModel) toDoTbl.getModel();
+            LoginForm login = new LoginForm();
+            model.setRowCount(0);
+            searchTxt.setText("");
+            FileReader fr = new FileReader("todo.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+            while ((read = br.readLine()) != null) {
+                if (read.split(";")[3].equals(login.getusername())) {
+                    String todo = read.split(";")[0];
+                    String status = read.split(";")[1];
+                    String dateTime = read.split(";")[2];
+                    String username = read.split(";")[3];
+                    model.addRow(new Object[]{todo, status, dateTime, username});
+                }
+
+            }
+        } catch (IOException e) {
+            System.out.println("Exception:" + e.getMessage());
+        }
+    }//GEN-LAST:event_searchBtnActionPerformed
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         // TODO add your handling code here:
-    
+     // TODO add your handling code here:
+        try {
+            DefaultTableModel model = (DefaultTableModel) toDoTbl.getModel();
+            LoginForm login = new LoginForm();
+            model.setRowCount(0);
+            searchTxt.setText("");
+            FileReader fr = new FileReader("todo.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+            while ((read = br.readLine()) != null) {
+                if (read.split(";")[3].equals(login.getusername())) {
+                    String todo = read.split(";")[0];
+                    String status = read.split(";")[1];
+                    String dateTime = read.split(";")[2];
+                    String username = read.split(";")[3];
+                    model.addRow(new Object[]{todo, status, dateTime, username});
+                }
+
+            }
+        } catch (IOException e) {
+            System.out.println("Exception:" + e.getMessage());
+        }
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) toDoTbl.getModel();
+        String todo = (String) model.getValueAt(
+        toDoTbl.getSelectedRow(),0);
+        String status = (String) model.getValueAt(
+        toDoTbl.getSelectedRow(),1);
+        this.dispose();
+        new editToDoForm().setDataForm(todo,status);
+        new editToDoForm().setVisible(true);
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
@@ -210,6 +318,51 @@ public class toDoListForm extends javax.swing.JFrame {
         this.dispose();
         new addToDoForm().setVisible(true);
     }//GEN-LAST:event_addBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void statBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statBtnActionPerformed
+        // TODO add your handling code here:
+         try {
+            int selectedRow = toDoTbl.getSelectedRow();
+            String todo = (String) toDoTbl.getValueAt(selectedRow, 0);
+            FileReader fr = new FileReader("todo.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String read;
+
+            ArrayList<ArrayList<String>> todoList = new ArrayList<>();
+            while ((read = br.readLine()) != null) {
+                ArrayList<String> record = new ArrayList<>();
+                record.add(read.split(";")[0]);
+                record.add(read.split(";")[1]);
+                record.add(read.split(";")[2]);
+                record.add(read.split(";")[3]);
+                todoList.add(record);
+            }
+            for (int row = 0; row < todoList.size(); row++) {
+                if (todoList.get(row).get(0).equals(todo)) {
+                    todoList.get(row).set(1, "Done");//Change status
+                }
+            }
+
+            // Writing the updated TODO records back to the file
+            FileWriter fw = new FileWriter("todo.txt");
+            for (int i = 0; i < todoList.size(); i++) {
+                fw.write(todoList.get(i).get(0) + ";");
+                fw.write(todoList.get(i).get(1) + ";");
+                fw.write(todoList.get(i).get(2) + ";");
+                fw.write(todoList.get(i).get(3) + ";\n");
+            }
+
+            fw.close();
+            this.dispose();
+            new toDoListForm().setVisible(true);
+        } catch (IOException e) {
+        }
+    }//GEN-LAST:event_statBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -249,7 +402,6 @@ public class toDoListForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Button addBtn;
-    private java.awt.Button changeStatusBtn;
     private java.awt.Button clearBtn;
     private java.awt.Button deleteBtn;
     private java.awt.Button editBtn;
@@ -257,8 +409,12 @@ public class toDoListForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private java.awt.Button registerBtn;
+    private java.awt.Button searchBtn;
+    private javax.swing.JTextField searchTxt;
+    private java.awt.Button statBtn;
     private javax.swing.JTable toDoTbl;
-    private javax.swing.JTextField toDoTtxtField;
+    private javax.swing.JLabel usernameLbl;
     // End of variables declaration//GEN-END:variables
+
+   
 }
