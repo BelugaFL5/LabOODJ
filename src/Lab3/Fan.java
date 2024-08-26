@@ -4,6 +4,9 @@
  */
 package Lab3;
 //lab3 q2
+
+//no main method 
+//implement test fan
 /**
  *
  * @author SIOW HAN BIN
