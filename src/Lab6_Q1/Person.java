@@ -20,6 +20,12 @@ public class Person {
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
+    }
+    
+    @Override
+    public String toString(){
+        
+        return "Class:" + this.getClass().getSimpleName() + ",Name:" +name;
         
     }
 }
